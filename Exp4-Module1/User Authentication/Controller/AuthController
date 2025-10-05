@@ -1,0 +1,37 @@
+package com.app.blog.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.app.blog.dto.SigninRequest;
+import com.app.blog.dto.SignupRequest;
+import com.app.blog.service.AuthService;
+
+@RestController
+@RequestMapping("/api/auth/public")
+public class AuthController {
+
+	@Autowired
+	AuthService authService;
+	@PostMapping("/signup")
+	public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
+	    return authService.signup(
+	        signupRequest.getUsername(),
+	        signupRequest.getEmail(),
+	        signupRequest.getPassword()
+	    );
+	}
+
+	
+	@PostMapping("/signin")
+	public ResponseEntity<?> signin(@RequestBody SigninRequest signinRequest){
+		return authService.signin(
+				signinRequest.getEmail(),signinRequest.getPassword());
+		
+	}
+}
