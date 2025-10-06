@@ -1,0 +1,64 @@
+package com.app.blog.service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class BlogService {
+
+	@Autowired
+	BlogRepository blogRepo;
+	
+	@Autowired
+	UserRepo userRepo;
+	
+	public ResponseEntity<List<BlogResponseDTO>> getBlogs() {
+	    List<Blog> allBlogs = blogRepo.findAll();
+	    
+	    List<BlogResponseDTO> blogDtos = allBlogs.stream().map(blog -> {
+	        List<String> usernames = blog.getLikesList().stream()
+	            .map(like -> like.getUser().getUsername())
+	            .toList();
+	        System.out.println(usernames);
+	        BlogResponseDTO dto = new BlogResponseDTO();
+	        dto.setId(blog.getId());
+	        dto.setTitle(blog.getTitle());
+	        dto.setContent(blog.getContent());
+	        dto.setAuthor(blog.getAuthor());
+	        dto.setCreatedAt(blog.getCreatedAt());
+	        return dto;
+	    }).toList();
+	    return ResponseEntity.ok(blogDtos);
+	}
+
+
+	public ResponseEntity<List<BlogResponseDTO>> getBlogsCreatedByUser(String email) {
+	    User user = userRepo.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+	    List<Blog> myBlogs = blogRepo.findByCreatedBy(user);
+
+	    List<BlogResponseDTO> response = myBlogs.stream().map(blog -> {
+	    	List<String> usernames = blog.getLikesList().stream()
+		            .map(like -> like.getUser().getUsername())
+		            .toList();
+	        BlogResponseDTO dto = new BlogResponseDTO();
+	        dto.setId(blog.getId());
+	        dto.setTitle(blog.getTitle());
+	        dto.setContent(blog.getContent());
+	        dto.setAuthor(blog.getAuthor());
+	        dto.setCreatedAt(blog.getCreatedAt());
+	        return dto;
+	    }).toList();
+
+	    return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+}
+
