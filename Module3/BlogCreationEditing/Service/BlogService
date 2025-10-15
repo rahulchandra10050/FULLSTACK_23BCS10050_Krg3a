@@ -1,0 +1,110 @@
+package com.app.blog.service;
+
+
+import java.util.Set;
+
+import com.app.blog.dto.BlogResponseDTO;
+import com.app.blog.model.Blog;
+import com.app.blog.model.User;
+import com.app.blog.repository.BlogRepository;
+import com.app.blog.repository.UserRepo;
+
+@Service
+public class BlogService {
+
+	@Autowired
+	BlogRepository blogRepo;
+	
+	@Autowired
+	UserRepo userRepo;
+
+
+	public ResponseEntity<List<BlogResponseDTO>> getBlogsCreatedByUser(String email) {
+	    User user = userRepo.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Blog> myBlogs = blogRepo.findByCreatedBy(user);
+
+	    List<BlogResponseDTO> response = myBlogs.stream().map(blog -> {
+	    	List<String> usernames = blog.getLikesList().stream()
+		            .map(like -> like.getUser().getUsername())
+		            .toList();
+	        BlogResponseDTO dto = new BlogResponseDTO();
+	        dto.setId(blog.getId());
+	        dto.setTitle(blog.getTitle());
+	        dto.setContent(blog.getContent());
+	        dto.setAuthor(blog.getAuthor());
+	        dto.setCreatedAt(blog.getCreatedAt());
+	        dto.setLikes(blog.getLikes());
+	        dto.setLikedByUsernames(usernames);
+	        dto.setTotalComments(blog.getTotalComments());
+	        return dto;
+	    }).toList();
+
+	    return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	
+	public ResponseEntity<?> createBlog(Blog blog,String email){
+		User user=userRepo.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
+		blog.setCreatedBy(user);
+		blog.setAuthor(user.getUsername());
+		blog.setCreatedAt(LocalDateTime.now());
+		return new ResponseEntity<>(blogRepo.save(blog),HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> deleteBlog(long blogid, String userEmail) {
+	    Optional<Blog> optionalBlog = blogRepo.findById(blogid);
+
+	    if (!optionalBlog.isPresent()) {
+	        return new ResponseEntity<>("Blog not found", HttpStatus.NOT_FOUND);
+	    }
+
+	    Blog blog = optionalBlog.get();
+
+	    // Fetching the user from email
+	    User user = userRepo.findByEmail(userEmail)
+	                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    // Admin can delete any blog
+	    System.out.println("User roles: "+user.getRoles());
+	    if (user.getRoles().contains("ADMIN")) {
+	        blogRepo.delete(blog);
+	        return ResponseEntity.ok("Blog deleted successfully by admin");
+	    }
+
+
+	    // Only author can delete their blog
+	    String authorEmail = blog.getCreatedBy().getEmail();
+	    if (!authorEmail.equals(userEmail)) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized to delete this blog");
+	    }
+
+	    blogRepo.delete(blog);
+	    return ResponseEntity.ok("Blog deleted successfully");
+	}
+
+
+	public ResponseEntity<?> editBlog(long blogid, Blog updatedBlog, String userEmail) {
+		// TODO Auto-generated method stub
+		Optional<Blog> optionalBlog=blogRepo.findById(blogid);
+		if(!optionalBlog.isPresent()) {;
+			return new ResponseEntity<>("Blog not found",HttpStatus.NOT_FOUND);
+		}
+		Blog existingBlog=optionalBlog.get();
+		String authorEmail=existingBlog.getCreatedBy().getEmail();
+		if(!authorEmail.equals(userEmail)) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized to edit this blog");
+		}
+	    existingBlog.setTitle(updatedBlog.getTitle());
+	    existingBlog.setContent(updatedBlog.getContent());
+	    existingBlog.setCreatedAt(LocalDateTime.now());
+	    blogRepo.save(existingBlog);
+	    return ResponseEntity.ok("Blog edited successfully");
+	}
+	}
+
+
+
+}
+
