@@ -1,0 +1,29 @@
+package com.app.blog.controller;
+
+import java.security.Principal;
+import java.util.List;
+
+import com.app.blog.dto.BlogResponseDTO;
+import com.app.blog.model.Blog;
+import com.app.blog.service.BlogService;
+
+@RestController
+@RequestMapping("/api/blogs")
+public class BlogController {
+
+	@Autowired
+	BlogService blogService;
+	
+	
+	@PostMapping("/create")
+	private ResponseEntity<?> createBlog(@RequestBody Blog blog,Principal principal){
+		String email=principal.getName();
+		return blogService.createBlog(blog,email);
+	}
+
+	@PutMapping("/edit/{id}")
+	private ResponseEntity<?> editBlog(@PathVariable long id,@RequestBody Blog blog,Principal principal){
+		return blogService.editBlog(id,blog,principal.getName());
+	}
+
+}
