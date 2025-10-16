@@ -1,0 +1,60 @@
+package com.app.blog.controller;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.hibernate.boot.jaxb.mapping.marshall.LockModeTypeMarshalling;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.app.blog.dto.BlogResponseDTO;
+import com.app.blog.dto.CommentDeleteReqDto;
+import com.app.blog.dto.CommentDto;
+import com.app.blog.model.Blog;
+import com.app.blog.model.Comment;
+import com.app.blog.service.BlogService;
+
+@RestController
+@RequestMapping("/api/blogs")
+public class BlogController {
+
+	@Autowired
+	BlogService blogService;
+	
+	@GetMapping("/likes/{id}")
+	private ResponseEntity<BlogResponseDTO> getLikes(@PathVariable long id,Principal principal){
+		return blogService.countLikes(id,principal.getName());
+	}
+	
+	@GetMapping("/likedBlogs")
+	private ResponseEntity<?> getAllLikedBlogs(Principal principal){
+		return blogService.getLikedBlogIds(principal.getName());
+	}
+
+	@PostMapping("/comments/{blogid}")
+	private ResponseEntity<?> postComment(Principal principal,@RequestBody Comment comment,@PathVariable Long blogid){
+		return blogService.postComment(principal.getName(),comment,blogid);
+	}
+	
+	@GetMapping("/comments/{blogid}")
+	private ResponseEntity<List<CommentDto>> getComments(@PathVariable Long blogid){
+		return blogService.getComments(blogid);
+	}
+	
+	@DeleteMapping("/comments/delete")
+	private ResponseEntity<?> deleteComment(Principal principal,@RequestBody CommentDeleteReqDto req){
+		return blogService.deleteComment(principal.getName(),req.getBlogId(),req.getCommentId());
+		
+		
+	}
+
+}
