@@ -1,0 +1,276 @@
+package com.app.blog.service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.app.blog.dto.BlogResponseDTO;
+import com.app.blog.dto.CommentDto;
+import com.app.blog.dto.profileDto;
+import com.app.blog.model.Blog;
+import com.app.blog.model.Comment;
+import com.app.blog.model.Like;
+import com.app.blog.model.User;
+import com.app.blog.repository.BlogRepository;
+import com.app.blog.repository.CommentRepo;
+import com.app.blog.repository.LikeRepo;
+import com.app.blog.repository.UserRepo;
+
+@Service
+public class BlogService {
+
+	@Autowired
+	BlogRepository blogRepo;
+	
+	@Autowired
+	UserRepo userRepo;
+	
+	@Autowired
+	LikeRepo likeRepo;
+	
+	@Autowired
+	CommentRepo commentRepo;
+	
+	public ResponseEntity<List<BlogResponseDTO>> getBlogs() {
+	    List<Blog> allBlogs = blogRepo.findAll();
+	    
+	    List<BlogResponseDTO> blogDtos = allBlogs.stream().map(blog -> {
+	        List<String> usernames = blog.getLikesList().stream()
+	            .map(like -> like.getUser().getUsername())
+	            .toList();
+	        System.out.println(usernames);
+	        BlogResponseDTO dto = new BlogResponseDTO();
+	        dto.setId(blog.getId());
+	        dto.setTitle(blog.getTitle());
+	        dto.setContent(blog.getContent());
+	        dto.setAuthor(blog.getAuthor());
+	        dto.setCreatedAt(blog.getCreatedAt());
+	        dto.setLikes(blog.getLikes());
+	        dto.setLikedByUsernames(usernames);
+	        dto.setTotalComments(blog.getTotalComments());
+
+	        return dto;
+	    }).toList();
+
+	    return ResponseEntity.ok(blogDtos);
+	}
+
+
+	public ResponseEntity<List<BlogResponseDTO>> getBlogsCreatedByUser(String email) {
+	    User user = userRepo.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Blog> myBlogs = blogRepo.findByCreatedBy(user);
+
+	    List<BlogResponseDTO> response = myBlogs.stream().map(blog -> {
+	    	List<String> usernames = blog.getLikesList().stream()
+		            .map(like -> like.getUser().getUsername())
+		            .toList();
+	        BlogResponseDTO dto = new BlogResponseDTO();
+	        dto.setId(blog.getId());
+	        dto.setTitle(blog.getTitle());
+	        dto.setContent(blog.getContent());
+	        dto.setAuthor(blog.getAuthor());
+	        dto.setCreatedAt(blog.getCreatedAt());
+	        dto.setLikes(blog.getLikes());
+	        dto.setLikedByUsernames(usernames);
+	        dto.setTotalComments(blog.getTotalComments());
+	        return dto;
+	    }).toList();
+
+	    return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	
+	public ResponseEntity<?> createBlog(Blog blog,String email){
+		User user=userRepo.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
+		blog.setCreatedBy(user);
+		blog.setAuthor(user.getUsername());
+		blog.setCreatedAt(LocalDateTime.now());
+		return new ResponseEntity<>(blogRepo.save(blog),HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> deleteBlog(long blogid, String userEmail) {
+	    Optional<Blog> optionalBlog = blogRepo.findById(blogid);
+
+	    if (!optionalBlog.isPresent()) {
+	        return new ResponseEntity<>("Blog not found", HttpStatus.NOT_FOUND);
+	    }
+
+	    Blog blog = optionalBlog.get();
+
+	    // Fetching the user from email
+	    User user = userRepo.findByEmail(userEmail)
+	                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    // Admin can delete any blog
+	    System.out.println("User roles: "+user.getRoles());
+	    if (user.getRoles().contains("ADMIN")) {
+	        blogRepo.delete(blog);
+	        return ResponseEntity.ok("Blog deleted successfully by admin");
+	    }
+
+
+	    // Only author can delete their blog
+	    String authorEmail = blog.getCreatedBy().getEmail();
+	    if (!authorEmail.equals(userEmail)) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized to delete this blog");
+	    }
+
+	    blogRepo.delete(blog);
+	    return ResponseEntity.ok("Blog deleted successfully");
+	}
+
+
+	public ResponseEntity<?> editBlog(long blogid, Blog updatedBlog, String userEmail) {
+		// TODO Auto-generated method stub
+		Optional<Blog> optionalBlog=blogRepo.findById(blogid);
+		if(!optionalBlog.isPresent()) {;
+			return new ResponseEntity<>("Blog not found",HttpStatus.NOT_FOUND);
+		}
+		Blog existingBlog=optionalBlog.get();
+		String authorEmail=existingBlog.getCreatedBy().getEmail();
+		if(!authorEmail.equals(userEmail)) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized to edit this blog");
+		}
+	    existingBlog.setTitle(updatedBlog.getTitle());
+	    existingBlog.setContent(updatedBlog.getContent());
+	    existingBlog.setCreatedAt(LocalDateTime.now());
+	    blogRepo.save(existingBlog);
+	    return ResponseEntity.ok("Blog edited successfully");
+	}
+
+	@Transactional
+	public ResponseEntity<BlogResponseDTO> countLikes(long blogId, String userEmail) {
+	    Blog blog = blogRepo.findById(blogId)
+	            .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+	        User user = userRepo.findByEmail(userEmail)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	        Optional<Like> existingLike = likeRepo.findByUserAndBlog(user, blog);
+
+	        if (existingLike.isPresent()) {
+	            likeRepo.delete(existingLike.get());
+	            blog.setLikes(blog.getLikes() - 1);
+	        } else {
+	            Like like = new Like();
+	            like.setUser(user);
+	            like.setBlog(blog);
+	            like.setLikedAt(LocalDateTime.now());
+	            likeRepo.save(like);
+	            blog.setLikes(blog.getLikes() + 1);
+	        }
+
+	        blog = blogRepo.findById(blogId)
+		            .orElseThrow(() -> new RuntimeException("Blog not found"));
+	        
+//	        System.out.println(blog.getLikesList());
+	        int likeCount = likeRepo.countByBlog(blog);
+	        blog.setLikes(likeCount);
+	        blogRepo.save(blog);
+	        // Prepare DTO with usernames
+	        List<String> usernames = blog.getLikesList().stream()
+		            .map(like -> like.getUser().getUsername())
+		            .toList();
+
+	        BlogResponseDTO dto = new BlogResponseDTO();
+	        dto.setId(blog.getId());
+	        dto.setTitle(blog.getTitle());
+	        dto.setContent(blog.getContent());
+	        dto.setAuthor(blog.getAuthor());
+	        dto.setCreatedAt(blog.getCreatedAt());
+	        dto.setLikes(blog.getLikes());
+	        dto.setLikedByUsernames(usernames);
+
+	        return new ResponseEntity<>(dto,HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> getLikedBlogIds(String email) {
+	    User user = userRepo.findByEmail(email)
+	        .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Like> likes = likeRepo.findByUser(user);
+	    List<Long> blogIds = likes.stream()
+	        .map(like -> like.getBlog().getId())
+	        .toList();
+
+	    return ResponseEntity.ok(blogIds);
+	}
+
+
+	public ResponseEntity<profileDto> getProfile(String email) {
+		// TODO Auto-generated method stub
+		User user=userRepo.findByEmail(email).orElseThrow(()->new RuntimeException("User not found!"));
+		profileDto dto=new profileDto();
+		dto.setUsername(user.getUsername());
+		dto.setEmail(user.getEmail());
+		dto.setRoles(new ArrayList<String>(user.getRoles()));
+		return ResponseEntity.ok(dto);
+	}
+
+
+	public ResponseEntity<?> postComment(String email, Comment comment,Long blogid) {
+		// TODO Auto-generated method stub
+		User user=userRepo.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
+		Blog blog=blogRepo.findById(blogid).orElseThrow(()->new RuntimeException("Blog not found"));
+		comment.setUser(user);
+		comment.setBlog(blog);
+		comment.setCreatedAt(LocalDateTime.now());
+		
+		blog.setTotalComments(blog.getTotalComments()+1);
+		blogRepo.save(blog);
+		System.out.println(blog.getTotalComments());
+		commentRepo.save(comment);
+		return ResponseEntity.ok("Comment saved");
+	}
+	
+	public ResponseEntity<List<CommentDto>> getComments(Long blogid){
+        Blog blog = blogRepo.findById(blogid)
+                .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+            List<Comment> comments = commentRepo.findByBlog(blog);
+
+            List<CommentDto> response = comments.stream().map(comment -> {
+                CommentDto dto = new CommentDto();
+                dto.setId(comment.getId());
+                dto.setContent(comment.getContent());
+                dto.setCreatedAt(comment.getCreatedAt());
+                dto.setUsername(comment.getUser().getUsername());
+                return dto;
+            }).toList();
+
+            return ResponseEntity.ok(response);
+	}
+
+
+	public ResponseEntity<?> deleteComment(String email, Long blogId, int commentId) {
+	    User user = userRepo.findByEmail(email)
+	        .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    Blog blog = blogRepo.findById(blogId)
+	        .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+	    Comment comment=commentRepo.findById(commentId).orElseThrow(()->new RuntimeException("Comment not found"));
+
+	    // Check if the user is either blog author or comment author
+	    if (blog.getAuthor().equals(user.getUsername()) || comment.getUser().getEmail().equals(email)) {
+	        commentRepo.delete(comment);
+	        blog.setTotalComments(blog.getTotalComments()-1);
+	        blogRepo.save(blog);
+	        return ResponseEntity.ok("Comment deleted successfully");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not allowed to delete this comment");
+	    }
+	}
+
+
+
+}
+
