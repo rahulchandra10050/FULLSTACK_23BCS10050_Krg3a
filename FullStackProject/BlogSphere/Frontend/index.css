@@ -1,0 +1,744 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.formDiv{
+  display: flex;
+  flex-direction: column;
+  width: 23rem;
+  padding: 0px;
+  margin: 0px;
+  justify-content: center;
+  align-items: center;
+}
+
+.SignupDiv{
+  height: fit-content;
+  width: 23rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 2px 4px 8px 0px rgba(13, 10, 202, 0.568);
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.LoginDiv{
+height: fit-content;
+  width: 23rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 2px 4px 8px 0px rgba(13, 10, 202, 0.568);
+  background-color: whitesmoke;
+}
+
+.usernameDiv  ,.emailDiv, .passDiv , .titleDiv ,.contentDiv, .authorDiv{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  padding: 0px;
+  margin: 10px;
+}
+
+input{
+  padding: 5px;
+  font-size: 15px;
+  margin-top: 5px;
+  width: 14rem;
+}
+
+label{
+  font-size: 0.85rem;
+  font-weight: 550;
+}
+
+.registerBtn{
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+
+.registerBtn button,.loginBtn button,.reset-pass button,.ForgotPasswordDiv button,.createBtn button{
+  background-color: #4CAF50;      /* Green background */
+  color: white;                   /* White text */
+  padding: 9px;
+  width: 15rem;             /* Padding */
+  border: none;                   /* No border */
+  border-radius: 8px;             /* Rounded corners */
+  cursor: pointer;                /* Pointer cursor on hover */
+  font-size: 13px;                /* Font size */
+  transition: all 0.3s ease;      /* Smooth transition */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.registerBtn button:hover,.loginBtn button:hover,.reset-pass button:hover{
+  background-color: #45a049;      /* Slightly darker green */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+  transform: translateY(-2px);
+}
+
+.SignupDiv  span{
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.LoginDiv  span{
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.LoginDiv{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: 0.2rem;
+}
+
+.LoginForm{
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.reset-pass{
+  height: fit-content;
+  width: 23rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 2px 4px 8px 0px rgba(13, 10, 202, 0.568);
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ForgotPasswordDiv{
+  height: fit-content;
+  width: fit-content;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 2px 4px 8px 0px rgba(13, 10, 202, 0.568);
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+.blog-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+.blog-home {
+  height: 75vh; /* adjust based on your layout */
+  overflow-y: auto;
+  padding: 1rem;
+  margin-top: 20px;
+  width: 95vw;
+}
+
+/* Optional scrollbar styling */
+.blog-home::-webkit-scrollbar {
+  width: 6px;
+}
+
+.blog-home::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 5px;
+}
+
+.blog-home::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+
+
+.blog-card {
+  width: 45rem;
+  background-color: #fdf4f4;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: transform 0.2s;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+}
+
+.blog-card h2 {
+  text-transform: uppercase;
+  margin-top: 0;
+  color: #333;
+  font-size: 21px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(249, 8, 205, 0.727);
+  
+}
+
+.blog-card p {
+  margin: 10px 0;
+}
+
+.blog-card button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.blog-card button:hover {
+  background-color: #0056b3;
+}
+
+.navbar {
+  position: absolute;
+  left: 30px;
+  top: 0px;
+  width: 91rem;
+  background-color: rgb(27, 189, 189);
+  padding: 0.3rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links a, .nav-links button {
+  color: black;
+  margin-left: 40px;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.nav-links a:hover, .nav-links button:hover {
+  text-decoration: underline;
+}
+
+/* === Base Page Layout === */
+.CreateBlogDiv {
+  width: 90%;
+  margin-top: 15rem;
+  max-width: 800px;
+  min-height: 80vh;
+  margin: 2rem auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #fff8f8, #fdeef1);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.CreateBlogDiv:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.CreateBlogDiv h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+/* === Form Styling === */
+.CreateformDiv {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.titleDiv,
+.contentDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.CreateBlogDiv label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #444;
+}
+
+/* === Input Fields === */
+.titleDiv input {
+  height: 2.8rem;
+  width: 100%;
+  max-width: 700px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.titleDiv input:focus {
+  outline: none;
+  border-color: #f08080;
+  box-shadow: 0 0 6px rgba(240, 128, 128, 0.5);
+}
+
+/* === Quill Editor Styling === */
+.contentDiv .ql-toolbar {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 10px 10px 0 0;
+  background-color: #fff;
+}
+
+.contentDiv .ql-container {
+  width: 100%;
+  max-width: 700px;
+  height: 250px;
+  border-radius: 0 0 10px 10px;
+  background-color: #fff;
+}
+
+/* === Button Styling === */
+.createBtn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.createBtn button {
+  background: linear-gradient(90deg, #f08080, #f4978e);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s ease;
+}
+
+.createBtn button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(240, 128, 128, 0.3);
+}
+
+/* === Message Text === */
+.CreateBlogDiv p {
+  margin-top: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+  .CreateBlogDiv {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .titleDiv input,
+  .contentDiv .ql-container,
+  .contentDiv .ql-toolbar {
+    max-width: 100%;
+  }
+
+  .createBtn button {
+    width: 100%;
+  }
+
+  .CreateBlogDiv h2 {
+    font-size: 1.5rem;
+  }
+}
+
+
+.my-blog-home {
+  margin-top: 180px; /* Push content below navbar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.like-comment-share-div {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 5px;
+}
+
+.like-comment-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+}
+
+.comment-content{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.contentPara{
+  width: 270px;
+}
+
+.deleteCmnt-icon{
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.deleteCmnt-icon:hover{
+  font-size: 22px;
+}
+.like-dislike {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.like-count {
+  font-size: 17px;
+}
+.comment-count {
+  font-size: 17px;
+}
+
+.comment-icon{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.comment-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+.no-comment-div{
+  height: 100px;
+  width: 220px;
+  font-size: 30px;
+  padding: 190px 0px;
+  font-weight: 600;
+}
+.back-button {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+.comment-page{
+  margin-top: 80px;
+}
+.comment-heading {
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+}
+
+.comment-list {
+  list-style: none;
+  padding-left: 0px;
+  padding-top: 20px;
+  margin-bottom: 20px;
+  max-height: 320px; 
+  min-height: 320px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Optional: Custom scrollbar styling */
+.comment-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.comment-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 6px;
+}
+
+.comment-list::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
+
+.comment-item {
+  padding: 1px 0px;
+  width: 320px;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-info {
+  display: flex;
+  gap:8px;
+  margin: 0;
+  margin-bottom: -15px;
+  font-size: 15.5px;
+  color: #222;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.add-comment-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.comment-input {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.comment-input:focus {
+  border-color: #007bff;
+}
+
+.send-icon{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  font-size: 22px;
+}
+.send-icon:hover{
+  font-size: 25px;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f6fc;
+}
+
+.profile-card {
+  border-radius: 10px;
+  padding: 30px 40px;
+  width: 350px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.profile-heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.profile-card p {
+  font-size: 17px;
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.error-text {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+
+
+@media screen and (max-width: 768px) {
+  body {
+    flex-direction: column;
+    padding: 10px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin-left: 10px;
+  }
+
+  .SignupDiv, .LoginDiv, .reset-pass, .ForgotPasswordDiv {
+    width: 90%;
+  }
+
+  .registerBtn button,
+  .loginBtn button,
+  .reset-pass button,
+  .ForgotPasswordDiv button,
+  .createBtn button {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  .blog-home, .my-blog-home {
+    width: 65rem;
+    padding: 1rem 1rem;
+  }
+
+  .blog-card {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .navbar {
+    width: 50rem;
+    flex-direction: column;
+    padding: 0.6rem;
+    gap: 100px;
+    position: static;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .CreateBlogDiv {
+    width: 95%;
+    height: auto;
+    padding: 1rem;
+  }
+
+  .contentDiv input,
+  .authorDiv input,
+  .titleDiv input {
+    width: 100%;
+  }
+
+  .createBtn button {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .comment-page {
+    padding: 1rem;
+    margin-top: 60px;
+    width: 95%;
+  }
+
+  .comment-list {
+    max-height: 300px;
+    min-height: 200px;
+  }
+
+  .comment-item {
+    width: 100%;
+  }
+
+  .profile-card {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .no-comment-div {
+    width: 100%;
+    padding: 30px 10px;
+    font-size: 22px;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .blog-card h2 {
+    font-size: 18px;
+  }
+
+  .comment-info {
+    font-size: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .like-comment-container {
+    font-size: 18px;
+    flex-wrap: wrap;
+  }
+
+  .comment-input {
+    font-size: 14px;
+  }
+
+  .send-icon {
+    font-size: 20px;
+  }
+
+  .send-icon:hover {
+    font-size: 22px;
+  }
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
